@@ -1,0 +1,317 @@
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<style>
+.gym-frontdesk {
+    --desk-ink: #17211d;
+    --desk-muted: #718078;
+    --desk-green: #168568;
+    --desk-line: #e5ebe7;
+    max-width: 1000px;
+    margin: 36px auto 60px;
+    color: var(--desk-ink);
+}
+.gym-frontdesk .desk-hero {
+    background: linear-gradient(125deg, #142e26, #17664e);
+    color: white;
+    border-radius: 22px;
+    padding: 32px;
+    margin-bottom: 24px;
+}
+.gym-frontdesk .desk-hero h1 {
+    color: white;
+    font-size: clamp(27px, 4vw, 36px);
+    font-weight: 800;
+    margin: 12px 0;
+}
+.gym-frontdesk .desk-hero p { opacity: .82; margin: 0; }
+.gym-frontdesk .eyebrow {
+    font-size: 12px;
+    letter-spacing: 2px;
+    opacity: .76;
+    font-weight: 700;
+}
+.gym-frontdesk .search-panel,
+.gym-frontdesk .member-card {
+    background: white;
+    border: 1px solid var(--desk-line);
+    border-radius: 17px;
+    padding: 23px;
+    margin-bottom: 15px;
+    box-shadow: 0 5px 20px rgba(22, 48, 36, .035);
+}
+.gym-frontdesk .search-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+.gym-frontdesk .search-row input {
+    min-height: 48px;
+    border-radius: 11px;
+    padding: 12px 15px;
+    flex: 1;
+}
+.gym-frontdesk .desk-button {
+    border: 0;
+    border-radius: 11px;
+    padding: 12px 18px;
+    background: var(--desk-green);
+    color: white;
+    font-weight: 700;
+}
+.gym-frontdesk .desk-button:hover { background: #116e53; color: white; }
+.gym-frontdesk .desk-button:disabled { opacity: .6; cursor: wait; }
+.gym-frontdesk .member-name {
+    font-size: 19px;
+    font-weight: 750;
+    margin: 0 0 7px;
+    overflow-wrap: anywhere;
+}
+.gym-frontdesk .member-details {
+    color: var(--desk-muted);
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+.gym-frontdesk .member-card {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+.gym-frontdesk .member-main { min-width: 0; }
+.gym-frontdesk .membership-badge {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 750;
+    margin: 0 0 13px;
+}
+.gym-frontdesk .badge-active { background: #e3f6eb; color: #176a43; }
+.gym-frontdesk .badge-inactive { background: #fff0df; color: #98500b; }
+.gym-frontdesk .badge-error { background: #fde9e7; color: #a3261d; }
+.gym-frontdesk .badge-neutral { background: #edf1ef; color: #52625a; }
+.gym-frontdesk .desk-message {
+    margin: 14px 0;
+    color: var(--desk-muted);
+    font-size: 13px;
+}
+.gym-frontdesk .desk-message.error { color: #b42318; }
+.gym-frontdesk .desk-message.success { color: #167c4b; }
+.gym-frontdesk .empty-state {
+    text-align: center;
+    padding: 32px 16px;
+    border: 1px dashed #d5dfd9;
+    border-radius: 14px;
+    color: var(--desk-muted);
+}
+@media (max-width: 600px) {
+    .gym-frontdesk { margin: 20px 10px 40px; }
+    .gym-frontdesk .desk-hero { padding: 25px 20px; }
+    .gym-frontdesk .search-panel, .gym-frontdesk .member-card { padding: 17px; }
+    .gym-frontdesk .search-row { flex-direction: column; }
+    .gym-frontdesk .member-card { flex-direction: column; }
+    .gym-frontdesk .member-card .desk-button { width: 100%; }
+}
+</style>
+
+<div class="container gym-frontdesk">
+    <section class="desk-hero">
+        <div class="eyebrow">GYM MANAGEMENT · FRONT DESK</div>
+        <h1>Member check-in</h1>
+        <p>Find a member, verify their membership and record today's visit.</p>
+    </section>
+
+    <section class="search-panel">
+        <label for="member-search"><strong>Search members</strong></label>
+        <p style="color:var(--desk-muted);font-size:13px;margin:6px 0 14px">
+            Search by member name or phone number.
+        </p>
+        <div class="search-row">
+            <input id="member-search" class="form-control"
+                   placeholder="e.g. Mariam Hassan or phone number"
+                   autocomplete="off">
+            <button id="search-button" class="desk-button">Search members</button>
+        </div>
+        <p id="checkin-message" class="desk-message" role="status" aria-live="polite"></p>
+    </section>
+
+    <div class="stat-top" style="display:flex;justify-content:space-between;align-items:center;margin:25px 0 14px">
+        <h3 style="font-size:19px;font-weight:750;margin:0">Search results</h3>
+        <span id="result-count" style="font-size:12px;color:var(--desk-muted)"></span>
+    </div>
+    <div id="search-results">
+        <div class="empty-state">Search for a member to see their membership status.</div>
+    </div>
+</div>
+
+<script>
+(() => {
+    const $ = id => document.getElementById(id);
+    let searchTimer;
+
+    function showMessage(text, type = "") {
+        const message = $("checkin-message");
+        message.textContent = text;
+        message.className = "desk-message" + (type ? " " + type : "");
+    }
+
+    async function searchMembers() {
+        const query = $("member-search").value.trim();
+        const results = $("search-results");
+        const button = $("search-button");
+
+        if (!query) {
+            $("result-count").textContent = "";
+            results.replaceChildren();
+            const empty = document.createElement("div");
+            empty.className = "empty-state";
+            empty.textContent = "Enter a member name or phone number to begin.";
+            results.appendChild(empty);
+            showMessage("");
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = "Searching…";
+        results.replaceChildren();
+        showMessage("Searching members…");
+
+        try {
+            const response = await fetch(
+                "/api/method/gym_management.api.search_front_desk_members?query=" +
+                encodeURIComponent(query),
+                { credentials: "same-origin" }
+            );
+            const payload = await response.json();
+
+            if (!response.ok || payload.exc) {
+                throw new Error("Search failed. Check your login and permissions.");
+            }
+
+            const members = payload.message || [];
+            $("result-count").textContent =
+                members.length + (members.length === 1 ? " member" : " members");
+
+            if (!members.length) {
+                const empty = document.createElement("div");
+                empty.className = "empty-state";
+                empty.textContent = "No matching members found. Try another name or phone.";
+                results.appendChild(empty);
+                showMessage("");
+                return;
+            }
+
+            members.forEach(member => {
+                const card = document.createElement("section");
+                card.className = "member-card";
+
+                const main = document.createElement("div");
+                main.className = "member-main";
+
+                const title = document.createElement("h4");
+                title.className = "member-name";
+                title.textContent = member.member_name || "Unnamed member";
+
+                const status = member.membership_status || "No active membership";
+                const badge = document.createElement("span");
+                badge.className = "membership-badge " +
+                    (status === "Active" ? "badge-active" :
+                     status === "Expired" ? "badge-inactive" :
+                     status === "No active membership" ? "badge-error" : "badge-neutral");
+                badge.textContent = status;
+
+                const details = document.createElement("div");
+                details.className = "member-details";
+                details.textContent = "Phone: " + (member.phone || "Not provided");
+
+                main.append(title, badge, details);
+                card.appendChild(main);
+
+                if (status === "Active" && member.membership) {
+                    const checkButton = document.createElement("button");
+                    checkButton.className = "desk-button";
+                    checkButton.textContent = "✓ Check in";
+                    checkButton.addEventListener("click", () => checkIn(member, checkButton));
+                    card.appendChild(checkButton);
+                } else {
+                    const note = document.createElement("span");
+                    note.className = "member-details";
+                    note.textContent = "Check-in unavailable";
+                    card.appendChild(note);
+                }
+
+                results.appendChild(card);
+            });
+
+            showMessage("");
+        } catch (error) {
+            showMessage(error.message, "error");
+        } finally {
+            button.disabled = false;
+            button.textContent = "Search members";
+        }
+    }
+
+    async function checkIn(member, button) {
+        button.disabled = true;
+        button.textContent = "Checking in…";
+        showMessage("");
+
+        try {
+            const csrf = window.csrf_token ||
+                (window.frappe && frappe.csrf_token) || "";
+
+            const response = await fetch("/api/method/frappe.client.insert", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Frappe-CSRF-Token": csrf
+                },
+                body: JSON.stringify({
+                    doc: {
+                        doctype: "Gym Check In",
+                        member: member.name,
+                        membership: member.membership,
+                        method: "Front Desk"
+                    }
+                })
+            });
+
+            const payload = await response.json();
+            if (!response.ok || payload.exc || !payload.message) {
+                throw new Error("Check-in failed. Verify permissions and membership status.");
+            }
+
+            button.textContent = "✓ Checked In";
+            button.disabled = true;
+            button.dataset.checkedIn = "true";
+            button.style.background = "#64756c";
+            showMessage(
+                "Check-in recorded successfully for " +
+                (member.member_name || "member") + ". Reference: " +
+                payload.message.name,
+                "success"
+            );
+        } catch (error) {
+            showMessage(error.message, "error");
+            button.disabled = false;
+            button.textContent = "✓ Check in";
+        }
+    }
+
+    $("search-button").addEventListener("click", searchMembers);
+    $("member-search").addEventListener("input", () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(searchMembers, 350);
+    });
+    $("member-search").addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            clearTimeout(searchTimer);
+            searchMembers();
+        }
+    });
+})();
+</script>
+{% endblock %}

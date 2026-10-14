@@ -2,7 +2,6 @@
  "actions": [],
  "allow_rename": 1,
  "creation": "2026-10-12 00:20:14.795625",
- "custom": 1,
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -120,8 +119,8 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-12 19:58:21.510568",
- "modified_by": "remas.saad212@gmail.com",
+ "modified": "2026-10-12 23:24:24.349051",
+ "modified_by": "Administrator",
  "module": "Gym Management",
  "name": "Gym Member",
  "owner": "remas.saad212@gmail.com",

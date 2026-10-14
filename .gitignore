@@ -5,3 +5,17 @@
 tags
 node_modules
 __pycache__
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+sites/
+*.sql
+*.sql.gz
+*.tar
+*.tar.gz
+*site_config*.json
+
+# Python cache
+__pycache__/
+*.py[cod]

@@ -1,41 +1,60 @@
-### Gym Management
+# Gym Management System
 
-Gym Management System built with Frappe and ERPNext
+A Gym Management application built with Frappe Framework v15 and ERPNext v15.
 
-### Installation
+The application manages gym members, membership plans, memberships, class sessions, class bookings, trainers, rooms, and check-ins. It integrates membership billing with ERPNext Sales Invoices.
 
-You can install this app using the [bench](https://github.com/frappe/bench) CLI:
+## Requirements
 
-```bash
-cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
-bench install-app gym_management
-```
+- Frappe Framework v15
+- ERPNext v15
+- A working Frappe Bench environment
 
-### Contributing
+## Installation
 
-This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
+Run the following commands from your bench directory:
 
 ```bash
-cd apps/gym_management
-pre-commit install
+bench get-app gym_management <REPOSITORY_URL>
+bench --site <SITE_NAME> install-app gym_management
+bench --site <SITE_NAME> migrate
+bench --site <SITE_NAME> clear-cache
 ```
 
-Pre-commit is configured to use the following tools for checking and formatting your code:
+Replace `<REPOSITORY_URL>` with the Git repository URL and `<SITE_NAME>` with your Frappe site name.
 
-- ruff
-- eslint
-- prettier
-- pyupgrade
+If the app is already available under `apps/gym_management`, skip `bench get-app`.
 
-### CI
+## Main Features
 
-This app can use GitHub Actions for CI. The following workflows are configured:
+- Gym member management with automatic Customer creation.
+- Membership plans linked to ERPNext Items.
+- Membership lifecycle management and end-date calculation.
+- Sales Invoice creation when a membership is submitted, with cancellation of the linked invoice when the membership is cancelled.
+- Class sessions, bookings, capacity validation, and waitlist handling.
+- Membership check-in validation.
+- Membership expiry reminders and scheduled status updates.
+- Membership Expiry Report.
+- Automated tests for core membership, booking, and class-session behavior.
 
-- CI: Installs this app and runs unit tests on every push to `develop` branch.
-- Linters: Runs [Frappe Semgrep Rules](https://github.com/frappe/semgrep-rules) and [pip-audit](https://pypi.org/project/pip-audit/) on every pull request.
+## Running Tests
 
+Run the tests from the bench directory:
 
-### License
+```bash
+bench --site <SITE_NAME> run-tests --module gym_management.gym_management.doctype.class_booking.test_class_booking
+bench --site <SITE_NAME> run-tests --module gym_management.gym_management.doctype.gym_membership.test_gym_membership
+bench --site <SITE_NAME> run-tests --module gym_management.gym_management.doctype.class_session.test_class_session
+```
 
-mit
+The three test modules above have been executed successfully in the development environment.
+
+## Implementation Notes
+
+- The app uses ERPNext Customers, Items, and Sales Invoices for its relevant business records.
+- Membership billing uses custom logic to create a Sales Invoice when a membership is submitted.
+- The app is designed to run as a separate Frappe application without modifying Frappe or ERPNext core files.
+
+## License
+
+MIT

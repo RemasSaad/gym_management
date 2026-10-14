@@ -2,7 +2,6 @@
  "actions": [],
  "allow_rename": 1,
  "creation": "2026-10-12 19:13:57.134685",
- "custom": 1,
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -68,7 +67,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-12 19:47:24.889311",
+ "modified": "2026-10-12 23:27:23.142025",
  "modified_by": "Administrator",
  "module": "Gym Management",
  "name": "Class Booking",

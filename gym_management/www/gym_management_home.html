@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gym Management</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#f5f8f6;color:#172b25;font-family:Inter,Arial,sans-serif}
+    a{text-decoration:none;color:inherit}
+    .layout{display:flex;min-height:100vh}
+    .sidebar{width:245px;background:#103b30;color:white;padding:28px 18px;flex-shrink:0}
+    .brand{font-size:21px;font-weight:800;margin:0 0 8px}
+    .subtitle{font-size:12px;color:#c5d9d1;margin-bottom:32px}
+    .navlabel{font-size:11px;letter-spacing:1.5px;color:#a9c8bc;margin:24px 10px 10px}
+    .nav a{display:block;padding:12px 13px;border-radius:9px;margin:4px 0;font-size:14px;color:#e5f0eb}
+    .nav a:hover,.nav a.active{background:#23634f;color:white}
+    main{flex:1;min-width:0;padding:34px clamp(18px,4vw,56px)}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:25px}
+    .top small{color:#648076}
+    .user{background:white;border:1px solid #e0e9e4;padding:10px 14px;border-radius:20px;font-size:13px}
+    .hero{background:linear-gradient(120deg,#12372d,#176c52);color:white;padding:35px;border-radius:22px;margin-bottom:28px}
+    .eyebrow{font-size:12px;letter-spacing:1.8px;font-weight:700;color:#c8ded5}
+    h1{font-size:clamp(28px,4vw,42px);margin:14px 0}
+    .hero p{color:#d8e8e1;margin:0;font-size:16px;line-height:1.6}
+    h2{font-size:20px;margin:28px 0 16px}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .card{background:white;border:1px solid #e0e9e4;border-radius:15px;padding:22px;transition:.15s;display:block}
+    .card:hover{border-color:#168365;transform:translateY(-2px);box-shadow:0 8px 22px #173d2c0c}
+    .ico{width:43px;height:43px;border-radius:12px;background:#e5f4ed;display:grid;place-items:center;font-size:21px;margin-bottom:18px}
+    .card strong{display:block;font-size:16px;margin-bottom:8px}
+    .card p{color:#71827b;font-size:13px;line-height:1.55;margin:0}
+    .quick{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+    .btn{display:inline-block;background:#168365;color:white;padding:12px 17px;border-radius:9px;font-weight:700;font-size:13px}
+    .btn.secondary{background:white;color:#17634f;border:1px solid #d8e7df}
+    footer{color:#83938c;font-size:12px;margin-top:30px}
+    @media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sidebar{width:205px}}
+    @media(max-width:620px){.layout{display:block}.sidebar{width:100%;padding:18px}.subtitle{margin-bottom:12px}.nav{display:flex;overflow:auto;gap:5px}.navlabel{display:none}.nav a{white-space:nowrap}.sidebar .nav:nth-of-type(2){display:none}main{padding:20px 15px}.hero{padding:25px 21px}.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">GYM MANAGEMENT</div>
+    <div class="subtitle">Your gym, in one workspace</div>
+    <div class="navlabel">WORKSPACE</div>
+    <nav class="nav">
+      <a class="active" href="/gym_management_home">⌂ &nbsp; Overview</a>
+      <a href="/gym_dashboard">▦ &nbsp; Dashboard</a>
+      <a href="/front_desk">✓ &nbsp; Front Desk</a>
+    </nav>
+    <div class="navlabel">MANAGEMENT</div>
+    <nav class="nav">
+      <a href="/app/gym-member">♙ &nbsp; Members</a>
+      <a href="/app/gym-membership">▤ &nbsp; Memberships</a>
+      <a href="/app/membership-plan">◇ &nbsp; Membership Plans</a>
+      <a href="/app/class-session">▦ &nbsp; Class Sessions</a>
+      <a href="/app/class-booking">☷ &nbsp; Class Bookings</a>
+      <a href="/app/gym-check-in">✓ &nbsp; Check-in Records</a>
+      <a href="/app/gym-trainer">♙ &nbsp; Trainers</a>
+      <a href="/app/gym-class">▤ &nbsp; Gym Classes</a>
+      <a href="/app/gym-room">⌂ &nbsp; Rooms</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="top">
+      <small>GYM MANAGEMENT / OVERVIEW</small>
+      <div class="user">Management Workspace</div>
+    </div>
+
+    <section class="hero">
+      <div class="eyebrow">YOUR FITNESS BUSINESS</div>
+      <h1>Everything in one place.</h1>
+      <p>Manage members, memberships, class schedules and front-desk check-ins from one workspace.</p>
+      <div class="quick">
+        <a class="btn" href="/gym_dashboard">Open Dashboard ↗</a>
+        <a class="btn secondary" href="/front_desk">Open Front Desk ↗</a>
+      </div>
+    </section>
+
+    <h2>Daily operations</h2>
+    <section class="grid">
+      <a class="card" href="/gym_dashboard">
+        <div class="ico">▦</div><strong>Gym Dashboard</strong>
+        <p>Review membership counts, class occupancy and invoice totals.</p>
+      </a>
+      <a class="card" href="/front_desk">
+        <div class="ico">✓</div><strong>Front Desk</strong>
+        <p>Search members, verify membership status and record visits.</p>
+      </a>
+      <a class="card" href="/app/class-session/view/calendar">
+        <div class="ico">▦</div><strong>Class Calendar</strong>
+        <p>Open the class-session calendar and review scheduled sessions.</p>
+      </a>
+    </section>
+
+    <h2>Members and subscriptions</h2>
+    <section class="grid">
+      <a class="card" href="/app/gym-member">
+        <div class="ico">♙</div><strong>Members</strong>
+        <p>Browse and manage gym member records.</p>
+      </a>
+      <a class="card" href="/app/gym-membership">
+        <div class="ico">▤</div><strong>Memberships</strong>
+        <p>Review membership status, dates and linked invoices.</p>
+      </a>
+      <a class="card" href="/app/membership-plan">
+        <div class="ico">◇</div><strong>Membership Plans</strong>
+        <p>Manage available plans and their service items.</p>
+      </a>
+    </section>
+
+    <h2>Classes and facilities</h2>
+    <section class="grid">
+      <a class="card" href="/app/class-session">
+        <div class="ico">◷</div><strong>Class Sessions</strong>
+        <p>Manage session times, capacity and trainers.</p>
+      </a>
+      <a class="card" href="/app/class-booking">
+        <div class="ico">☷</div><strong>Class Bookings</strong>
+        <p>Review bookings and waitlisted members.</p>
+      </a>
+      <a class="card" href="/app/gym-check-in">
+        <div class="ico">✓</div><strong>Check-in Records</strong>
+        <p>Review recorded gym visits.</p>
+      </a>
+      <a class="card" href="/app/gym-trainer">
+        <div class="ico">♙</div><strong>Trainers</strong>
+        <p>View and manage trainer records.</p>
+      </a>
+      <a class="card" href="/app/gym-class">
+        <div class="ico">▤</div><strong>Gym Classes</strong>
+        <p>Manage class types and descriptions.</p>
+      </a>
+      <a class="card" href="/app/gym-room">
+        <div class="ico">⌂</div><strong>Rooms</strong>
+        <p>Manage training rooms and facility locations.</p>
+      </a>
+    </section>
+    <footer>Gym Management · Internal workspace · Access depends on your assigned role.</footer>
+  </main>
+</div>
+</body>
+</html>

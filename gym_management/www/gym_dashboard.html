@@ -1,0 +1,254 @@
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<style>
+.gym-dashboard {
+    --gym-ink: #17211d;
+    --gym-muted: #718078;
+    --gym-green: #168568;
+    --gym-line: #e5ebe7;
+    max-width: 1180px;
+    margin: 36px auto 60px;
+    color: var(--gym-ink);
+}
+.gym-dashboard .hero {
+    background: linear-gradient(125deg, #142e26, #17664e);
+    color: white;
+    padding: 34px;
+    border-radius: 22px;
+    margin-bottom: 26px;
+    position: relative;
+    overflow: hidden;
+}
+.gym-dashboard .eyebrow {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: .76;
+    font-weight: 700;
+}
+.gym-dashboard .hero h1 {
+    color: white;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    margin: 12px 0;
+}
+.gym-dashboard .hero p { opacity: .8; margin: 0; }
+.gym-dashboard .section-heading {
+    font-size: 19px;
+    font-weight: 750;
+    margin: 28px 0 15px;
+}
+.gym-dashboard .stat-card {
+    background: white;
+    border: 1px solid var(--gym-line);
+    border-radius: 17px;
+    padding: 23px;
+    min-height: 160px;
+    margin-bottom: 18px;
+    box-shadow: 0 5px 20px rgba(22, 48, 36, .035);
+}
+.gym-dashboard .stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+.gym-dashboard .stat-label {
+    color: var(--gym-muted);
+    font-size: 13px;
+    font-weight: 650;
+}
+.gym-dashboard .stat-icon {
+    width: 39px; height: 39px;
+    border-radius: 12px;
+    display: grid; place-items: center;
+    background: #e8f5ef;
+    color: #167c5c;
+    font-size: 19px;
+}
+.gym-dashboard .stat-value {
+    font-size: 34px;
+    font-weight: 800;
+    margin: 17px 0 5px;
+    letter-spacing: -1px;
+}
+.gym-dashboard .stat-note {
+    color: var(--gym-muted);
+    font-size: 12px;
+}
+.gym-dashboard .panel {
+    border: 1px solid var(--gym-line);
+    border-radius: 17px;
+    background: white;
+    padding: 24px;
+    margin-bottom: 18px;
+}
+.gym-dashboard .progress-track {
+    height: 10px;
+    background: #e9efeb;
+    border-radius: 99px;
+    overflow: hidden;
+    margin: 17px 0 10px;
+}
+.gym-dashboard .progress-fill {
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #168568, #65c79b);
+    border-radius: inherit;
+    transition: width .5s ease;
+}
+.gym-dashboard .gym-button {
+    border: 0;
+    border-radius: 10px;
+    padding: 11px 17px;
+    font-weight: 650;
+    background: white;
+    color: #155f49;
+}
+.gym-dashboard .gym-button:hover { background: #e9f5ef; }
+.gym-dashboard .status-message { color: var(--gym-muted); font-size: 13px; }
+.gym-dashboard .status-message.error { color: #b42318; }
+@media (max-width: 600px) {
+    .gym-dashboard { margin: 20px 10px 40px; }
+    .gym-dashboard .hero { padding: 25px 20px; }
+    .gym-dashboard .stat-card { padding: 17px; min-height: 145px; }
+    .gym-dashboard .stat-value { font-size: 29px; }
+}
+</style>
+
+<div class="container gym-dashboard">
+    <section class="hero">
+        <div class="eyebrow">GYM MANAGEMENT · OVERVIEW</div>
+        <h1>Your gym, at a glance.</h1>
+        <p>Memberships, class capacity and monthly revenue in one place.</p>
+    </section>
+
+    <div class="stat-top">
+        <h3 class="section-heading" style="margin-top:0">Performance overview</h3>
+        <button class="gym-button" id="refresh-dashboard">↻ Refresh</button>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">ACTIVE MEMBERS</span>
+                    <span class="stat-icon">♙</span>
+                </div>
+                <div class="stat-value" id="active-members">—</div>
+                <div class="stat-note">Currently active memberships</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">EXPIRING SOON</span>
+                    <span class="stat-icon">◷</span>
+                </div>
+                <div class="stat-value" id="expiring-memberships">—</div>
+                <div class="stat-note">Memberships expiring in 7 days</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">TODAY'S FILL RATE</span>
+                    <span class="stat-icon">▥</span>
+                </div>
+                <div class="stat-value" id="fill-rate">—</div>
+                <div class="stat-note" id="session-count">Loading class capacity…</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">MONTHLY REVENUE</span>
+                    <span class="stat-icon">↗</span>
+                </div>
+                <div class="stat-value" id="monthly-revenue">—</div>
+                <div class="stat-note">Submitted invoices this month</div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="section-heading">Today's class occupancy</h3>
+    <section class="panel">
+        <div class="stat-top">
+            <div>
+                <strong>Booked spots</strong>
+                <div class="stat-note" id="occupancy-description">Waiting for live statistics</div>
+            </div>
+            <strong id="occupancy-percent">—</strong>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="occupancy-progress"></div>
+        </div>
+        <div class="stat-top">
+            <span class="stat-note">Bookings compared with total available spots</span>
+            <span class="stat-note" id="last-updated"></span>
+        </div>
+    </section>
+
+    <p id="dashboard-message" class="status-message" role="status" aria-live="polite"></p>
+</div>
+
+<script>
+(() => {
+    const $ = id => document.getElementById(id);
+    const number = value => Number(value || 0).toLocaleString();
+    const money = value => Number(value || 0).toLocaleString(undefined, {
+        maximumFractionDigits: 2
+    });
+
+    async function loadDashboard() {
+        const message = $("dashboard-message");
+        const button = $("refresh-dashboard");
+        message.className = "status-message";
+        message.textContent = "Refreshing live statistics…";
+        button.disabled = true;
+
+        try {
+            const response = await fetch(
+                "/api/method/gym_management.api.get_gym_dashboard_stats",
+                { credentials: "same-origin" }
+            );
+            const payload = await response.json();
+
+            if (!response.ok || payload.exc || !payload.message) {
+                throw new Error("Could not load statistics. Check your login and API.");
+            }
+
+            const stats = payload.message;
+            const booked = Number(stats.today_booked || 0);
+            const capacity = Number(stats.today_capacity || 0);
+            const fill = Math.max(0, Math.min(100, Number(stats.today_fill_rate || 0)));
+
+            $("active-members").textContent = number(stats.active_members);
+            $("expiring-memberships").textContent = number(stats.expiring_in_7_days);
+            $("fill-rate").textContent = fill + "%";
+            $("session-count").textContent = number(booked) + " booked · " +
+                number(capacity) + " total spots";
+            $("monthly-revenue").textContent = money(stats.revenue_this_month);
+            $("occupancy-percent").textContent = fill + "%";
+            $("occupancy-description").textContent =
+                number(booked) + " bookings across " + number(capacity) + " spots";
+            $("occupancy-progress").style.width = fill + "%";
+            $("last-updated").textContent =
+                "Updated " + new Date().toLocaleTimeString([], {
+                    hour: "2-digit", minute: "2-digit"
+                });
+            message.textContent = "Statistics updated successfully.";
+        } catch (error) {
+            message.className = "status-message error";
+            message.textContent = error.message;
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    $("refresh-dashboard").addEventListener("click", loadDashboard);
+    loadDashboard();
+})();
+</script>
+{% endblock %}

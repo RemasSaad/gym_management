@@ -2,7 +2,6 @@
  "actions": [],
  "allow_rename": 1,
  "creation": "2026-10-12 19:18:51.746609",
- "custom": 1,
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -63,7 +62,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-12 19:47:22.562515",
+ "modified": "2026-10-12 23:27:23.642772",
  "modified_by": "Administrator",
  "module": "Gym Management",
  "name": "Gym Check In",

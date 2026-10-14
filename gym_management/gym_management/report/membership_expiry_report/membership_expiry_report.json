@@ -1,0 +1,17 @@
+{
+  "doctype": "Report",
+  "name": "Membership Expiry Report",
+  "report_name": "Membership Expiry Report",
+  "ref_doctype": "Gym Membership",
+  "report_type": "Script Report",
+  "is_standard": "Yes",
+  "module": "Gym Management",
+  "roles": [
+    {
+      "role": "Gym Manager"
+    },
+    {
+      "role": "System Manager"
+    }
+  ]
+}

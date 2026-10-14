@@ -2,7 +2,6 @@
  "actions": [],
  "allow_rename": 1,
  "creation": "2026-10-12 18:54:33.328606",
- "custom": 1,
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -40,7 +39,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-12 19:47:20.431213",
+ "modified": "2026-10-12 23:27:21.668044",
  "modified_by": "Administrator",
  "module": "Gym Management",
  "name": "Gym Room",

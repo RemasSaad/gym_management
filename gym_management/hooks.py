@@ -253,3 +253,14 @@ app_license = "mit"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+scheduler_events = {
+    "daily": [
+        "gym_management.tasks.update_membership_statuses",
+        "gym_management.tasks.send_membership_expiry_reminders"
+    ],
+}
+
+# Calendar view for Class Session
+doctype_calendar_js = {
+    "Class Session": "public/js/class_session_calendar.js"
+}

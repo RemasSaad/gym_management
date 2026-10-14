@@ -1,7 +1,6 @@
 {
  "actions": [],
  "creation": "2026-10-11 23:54:07.992451",
- "custom": 1,
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -64,7 +63,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-10-12 19:47:24.138237",
+ "modified": "2026-10-12 23:27:24.138141",
  "modified_by": "Administrator",
  "module": "Gym Management",
  "name": "Gym Settings",
